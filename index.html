@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beverage UI Kit - AI Prompt Generator</title>
+    <title>Beer AI Prompt Generator</title>
     <style>
         :root {
-            --primary: #8B4513;
-            --secondary: #D2B48C;
+            --primary: #D4A574;
+            --secondary: #8B6F47;
             --accent: #C41E3A;
-            --bg: #F5F1EB;
+            --bg: #FDF8F3;
             --text: #2C2C2C;
-            --border: #D4AF86;
+            --border: #D4A574;
             --success: #2E7D32;
         }
 
@@ -29,13 +29,14 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         h1 {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 8px;
+            color: var(--secondary);
         }
 
         .subtitle {
@@ -50,7 +51,7 @@
             padding: 24px;
             border: 1px solid var(--border);
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .section-title {
@@ -59,6 +60,7 @@
             margin-bottom: 16px;
             padding-bottom: 12px;
             border-bottom: 2px solid var(--border);
+            color: var(--secondary);
         }
 
         /* Form */
@@ -71,6 +73,7 @@
             font-weight: 500;
             margin-bottom: 6px;
             font-size: 14px;
+            color: var(--text);
         }
 
         input, textarea, select {
@@ -108,8 +111,14 @@
             gap: 16px;
         }
 
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
         @media (max-width: 768px) {
-            .grid-2 {
+            .grid-2, .grid-3 {
                 grid-template-columns: 1fr;
             }
         }
@@ -119,6 +128,7 @@
             display: flex;
             gap: 12px;
             margin-top: 24px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -134,6 +144,8 @@
         .btn-primary {
             background: var(--accent);
             color: white;
+            flex: 1;
+            min-width: 200px;
         }
 
         .btn-primary:hover {
@@ -148,7 +160,7 @@
         }
 
         .btn-secondary:hover {
-            background: #b8945a;
+            background: #6d5637;
         }
 
         .btn-copy {
@@ -159,6 +171,52 @@
 
         .btn-copy:hover {
             background: #1b5e20;
+        }
+
+        /* Template selection */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .template-card {
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 13px;
+            background: white;
+        }
+
+        .template-card:hover {
+            border-color: var(--accent);
+            background: #fff5f0;
+            transform: translateY(-2px);
+        }
+
+        .template-card.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .template-card.selected:hover {
+            background: #a01830;
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Output */
@@ -173,12 +231,18 @@
 
         .output-section.active {
             display: block;
+            animation: slideIn 0.3s ease-out;
         }
 
-        .output-title {
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--primary);
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .prompt-box {
@@ -192,8 +256,9 @@
             color: var(--text);
             word-break: break-word;
             white-space: pre-wrap;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
         }
 
         .copied-notification {
@@ -205,45 +270,11 @@
             display: none;
             text-align: center;
             font-size: 13px;
+            animation: slideIn 0.3s ease-out;
         }
 
         .copied-notification.show {
             display: block;
-        }
-
-        /* Template selection */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .template-card {
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        .template-card:hover {
-            border-color: var(--accent);
-            background: #f0e6e0;
-        }
-
-        .template-card.selected {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        @media (max-width: 768px) {
-            .template-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Tips */
@@ -258,121 +289,165 @@
         }
 
         .tips strong {
-            color: var(--primary);
+            color: var(--secondary);
+        }
+
+        .beer-styles {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .beer-style-badge {
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #D4A574 0%, #8B6F47 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .beer-style-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .beer-styles {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🍷 AI Prompt Generator для UI Kit</h1>
-        <p class="subtitle">Введіть деталі напою, отримайте готовий prompt для AI</p>
+        <h1>🍺 AI Prompt Generator для ПИВА</h1>
+        <p class="subtitle">Генеруйте готові промпти для створення фото пива через AI (Midjourney, DALL-E, Stable Diffusion)</p>
 
         <!-- ОСНОВНА ФОРМА -->
         <div class="section">
-            <div class="section-title">📝 Інформація про напій</div>
+            <div class="section-title">📝 Інформація про пиво</div>
 
             <div class="form-group">
-                <label>Назва напою *</label>
-                <input type="text" id="beverageName" placeholder="Наприклад: Premium Red Wine, Craft IPA Beer">
-                <div class="input-hint">Як називається цей напій</div>
+                <label>Назва пива *</label>
+                <input type="text" id="beerName" placeholder="Наприклад: Craft IPA Rebellion, Dark Stout Premium">
+                <div class="input-hint">Точна назва сорту</div>
             </div>
 
             <div class="grid-2">
                 <div class="form-group">
-                    <label>Бренд *</label>
-                    <input type="text" id="brand" placeholder="Наприклад: Chateau Lafite">
+                    <label>Бренд/Пивоварня *</label>
+                    <input type="text" id="brand" placeholder="Наприклад: BrewMasters, Guinness">
                 </div>
                 <div class="form-group">
                     <label>Країна *</label>
-                    <input type="text" id="country" placeholder="Наприклад: Франція, США">
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Тип напою *</label>
-                    <select id="type">
-                        <option>Виберіть тип</option>
-                        <option>Червоне вино</option>
-                        <option>Біле вино</option>
-                        <option>Шампанське</option>
-                        <option>Пиво (Lager)</option>
-                        <option>Пиво (IPA)</option>
-                        <option>Пиво (Stout)</option>
-                        <option>Виски</option>
-                        <option>Горілка</option>
-                        <option>Інший</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Колір напою</label>
-                    <input type="text" id="color" placeholder="Наприклад: Темно-рубіновий, світло-золотий">
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Фільтрація</label>
-                    <input type="text" id="filtration" placeholder="Наприклад: Природна, механічна">
-                </div>
-                <div class="form-group">
-                    <label>Алкоголь (%) *</label>
-                    <input type="number" id="alcohol" placeholder="14.5" min="0" max="100" step="0.1">
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Обсяг упаковки *</label>
-                    <input type="text" id="volume" placeholder="750 мл">
-                </div>
-                <div class="form-group">
-                    <label>Пакування</label>
-                    <input type="text" id="packaging" placeholder="Скляна пляшка, канна, пакет">
+                    <input type="text" id="country" placeholder="Наприклад: США, Ірландія">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Додаткові характеристики</label>
-                <textarea id="additionalInfo" placeholder="Смак, аромат, визуальний стиль, особливості..."></textarea>
-                <div class="input-hint">Опишіть, що робить цей напій унікальним</div>
+                <label>Стиль пива *</label>
+                <div class="beer-styles">
+                    <div class="beer-style-badge" onclick="selectBeerStyle('IPA')">🌟 IPA</div>
+                    <div class="beer-style-badge" onclick="selectBeerStyle('Lager')">❄️ Lager</div>
+                    <div class="beer-style-badge" onclick="selectBeerStyle('Stout')">🌙 Stout</div>
+                    <div class="beer-style-badge" onclick="selectBeerStyle('Porter')">🍫 Porter</div>
+                    <div class="beer-style-badge" onclick="selectBeerStyle('Pilsner')">👑 Pilsner</div>
+                </div>
+                <input type="text" id="style" placeholder="Виберіть або напишіть власний стиль" style="margin-top: 12px;">
+                <div class="input-hint">IPA, Lager, Stout, Porter, Pilsner, Wheat Beer, Pale Ale тощо</div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Колір пива</label>
+                    <input type="text" id="color" placeholder="Світло-золотий, темно-коричневий">
+                </div>
+                <div class="form-group">
+                    <label>Мутність</label>
+                    <input type="text" id="clarity" placeholder="Прозоре, мутне, з осадом">
+                </div>
+                <div class="form-group">
+                    <label>Корона піни</label>
+                    <input type="text" id="foam" placeholder="Щільна біла піна, тонка пора">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Алкоголь (%) *</label>
+                    <input type="number" id="alcohol" placeholder="6.8" min="0" max="20" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Обсяг упаковки *</label>
+                    <input type="text" id="volume" placeholder="500 мл, 330 мл, 1 л">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Тип пакування</label>
+                    <input type="text" id="packaging" placeholder="Скляна пляшка, банка, кег">
+                </div>
+                <div class="form-group">
+                    <label>Смак *</label>
+                    <input type="text" id="taste" placeholder="Хмільний, солодкий, гіркий, фруктовий">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Аромат *</label>
+                <input type="text" id="aroma" placeholder="Хвойна, цитрус, карамель, шоколад, м'ясо">
+                <div class="input-hint">Запахові ноти пива</div>
+            </div>
+
+            <div class="form-group">
+                <label>Додаткові деталі</label>
+                <textarea id="additionalInfo" placeholder="Опишіть особливості, візуальний стиль, ідею для фото..."></textarea>
             </div>
         </div>
 
-        <!-- ШАБЛОН PROMPT -->
+        <!-- ВИБІР СТИЛЮ ФОТО -->
         <div class="section">
-            <div class="section-title">🎨 Вибір шаблону</div>
+            <div class="section-title">🎨 Стиль фото для AI</div>
 
             <div class="template-grid">
-                <div class="template-card selected" data-template="realistic">
-                    <div>📸</div>
-                    <div style="margin-top: 4px;">Реалістичне фото</div>
+                <div class="template-card selected" data-template="realistic" onclick="selectTemplate(this)">
+                    <div class="emoji">📸</div>
+                    <div>Реалістичне фото</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 4px;">Студійне, білий фон</div>
                 </div>
-                <div class="template-card" data-template="product">
-                    <div>🛍️</div>
-                    <div style="margin-top: 4px;">Product shot</div>
+                <div class="template-card" data-template="product" onclick="selectTemplate(this)">
+                    <div class="emoji">🛍️</div>
+                    <div>Product Shot</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 4px;">Для каталогу, e-commerce</div>
                 </div>
-                <div class="template-card" data-template="lifestyle">
-                    <div>🌟</div>
-                    <div style="margin-top: 4px;">Lifestyle фото</div>
+                <div class="template-card" data-template="lifestyle" onclick="selectTemplate(this)">
+                    <div class="emoji">🌟</div>
+                    <div>Lifestyle</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 4px;">Стильна, натуральне світло</div>
                 </div>
             </div>
 
             <div class="tips">
-                <strong>💡 Порада:</strong> Вибір шаблону впливає на стиль фото, яке згенерує AI. Реалістичне - для каталогу, Product shot - для реклами, Lifestyle - для соцмереж.
+                <strong>💡 Порада:</strong> Вибір впливає на стиль генерованого фото. Реалістичне - для каталогу, Product shot - для реклами, Lifestyle - для соцмереж.
             </div>
         </div>
 
         <!-- КНОПКА ГЕНЕРАЦІЇ -->
         <div class="section">
-            <button class="btn-primary" onclick="generatePrompt()" style="width: 100%; padding: 16px;">
-                ✨ Генерувати Prompt
+            <button class="btn-primary" onclick="generatePrompt()">
+                ✨ Генерувати Prompt для AI
             </button>
         </div>
 
         <!-- РЕЗУЛЬТАТ -->
         <div class="section output-section" id="outputSection">
-            <div class="section-title">📋 Готовий Prompt для AI (Midjourney/DALL-E)</div>
+            <div class="section-title">📋 Готовий Prompt для Midjourney/DALL-E</div>
 
             <div class="prompt-box" id="promptBox">
                 Prompt з'явиться тут...
@@ -380,7 +455,7 @@
 
             <div class="button-group">
                 <button class="btn-copy" onclick="copyToClipboard()">📋 Копіювати Prompt</button>
-                <button class="btn-secondary" onclick="openInMidjourney()">🚀 Відкрити в Midjourney</button>
+                <button class="btn-secondary" onclick="downloadPrompt()">⬇️ Завантажити</button>
             </div>
 
             <div class="copied-notification" id="copiedNotif">✅ Prompt скопійовано в буфер обміну!</div>
@@ -390,11 +465,16 @@
         <div class="section">
             <div class="section-title">📖 Як використовувати</div>
             <div style="font-size: 13px; line-height: 1.8; color: #555;">
-                <p style="margin-bottom: 12px;"><strong>1. Заповніть форму</strong> з деталями напою (назва, бренд, країна)</p>
-                <p style="margin-bottom: 12px;"><strong>2. Виберіть стиль фото</strong> - реалістичне, product shot або lifestyle</p>
-                <p style="margin-bottom: 12px;"><strong>3. Натисніть "Генерувати Prompt"</strong> - AI створить текст для генератора</p>
-                <p style="margin-bottom: 12px;"><strong>4. Копіюйте prompt</strong> і вставте в Midjourney, DALL-E або іншу AI</p>
-                <p><strong>5. AI створить фото</strong> для вашого UI Kit 🎉</p>
+                <p style="margin-bottom: 12px;"><strong>1️⃣ Заповніть форму</strong> з деталями пива (назва, бренд, стиль, смак, аромат)</p>
+                <p style="margin-bottom: 12px;"><strong>2️⃣ Виберіть стиль фото</strong> - реалістичне, product shot або lifestyle</p>
+                <p style="margin-bottom: 12px;"><strong>3️⃣ Натисніть "Генерувати Prompt"</strong> - система створить текст для AI</p>
+                <p style="margin-bottom: 12px;"><strong>4️⃣ Копіюйте або завантажте</strong> готовий prompt</p>
+                <p style="margin-bottom: 12px;"><strong>5️⃣ Вставте в AI:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Midjourney:</strong> /imagine prompt: [ваш_prompt]</li>
+                    <li><strong>DALL-E:</strong> Просто вставте в пошук</li>
+                    <li><strong>Stable Diffusion:</strong> Вставте як основний prompt</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -402,29 +482,32 @@
     <script>
         let selectedTemplate = 'realistic';
 
-        // Обрання шаблону
-        document.querySelectorAll('.template-card').forEach(card => {
-            card.addEventListener('click', function() {
-                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedTemplate = this.dataset.template;
-            });
-        });
+        function selectTemplate(el) {
+            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedTemplate = el.dataset.template;
+        }
+
+        function selectBeerStyle(style) {
+            document.getElementById('style').value = style;
+        }
 
         function generatePrompt() {
-            const name = document.getElementById('beverageName').value.trim();
+            const name = document.getElementById('beerName').value.trim();
             const brand = document.getElementById('brand').value.trim();
             const country = document.getElementById('country').value.trim();
-            const type = document.getElementById('type').value;
+            const style = document.getElementById('style').value.trim();
             const color = document.getElementById('color').value.trim();
-            const filtration = document.getElementById('filtration').value.trim();
+            const clarity = document.getElementById('clarity').value.trim();
+            const foam = document.getElementById('foam').value.trim();
             const alcohol = document.getElementById('alcohol').value.trim();
             const volume = document.getElementById('volume').value.trim();
             const packaging = document.getElementById('packaging').value.trim();
+            const taste = document.getElementById('taste').value.trim();
+            const aroma = document.getElementById('aroma').value.trim();
             const additionalInfo = document.getElementById('additionalInfo').value.trim();
 
-            // Валідація
-            if (!name || brand === '' || country === '' || type === 'Виберіть тип' || !alcohol || !volume) {
+            if (!name || !brand || !country || !style || !alcohol || !volume || !taste || !aroma) {
                 alert('⚠️ Заповніть всі обов\'язкові поля (позначені *)');
                 return;
             }
@@ -432,26 +515,30 @@
             let prompt = '';
 
             if (selectedTemplate === 'realistic') {
-                prompt = `Professional product photography of ${name} by ${brand} from ${country}. 
-Bottle showing: ${type}, ${color || 'elegant'} color, ${packaging || 'premium glass bottle'}.
-Alcohol content: ${alcohol}%, Volume: ${volume}.
-${filtration ? `Filtration: ${filtration}.` : ''}
-${additionalInfo ? `Characteristics: ${additionalInfo}.` : ''}
+                prompt = `Professional product photography of ${name} by ${brand} from ${country}.
+${style} beer bottle: ${color || 'golden'} liquid, ${clarity || 'clear'} appearance, ${foam || 'creamy'} head.
+Alcohol: ${alcohol}%, Volume: ${volume}.
+${packaging ? `Packaging: ${packaging}.` : ''}
+Taste profile: ${taste}.
+Aromas: ${aroma}.
+${additionalInfo ? `Details: ${additionalInfo}.` : ''}
 Studio lighting, white background, 4k, professional product shot, sharp focus, clean minimalist style.`;
             } else if (selectedTemplate === 'product') {
                 prompt = `E-commerce product shot: ${name} - ${brand} from ${country}.
-${type}, ${color || 'beautiful'} liquid in ${packaging || 'bottle'}.
-${alcohol}% alcohol, ${volume} volume.
-${filtration ? `${filtration} filtration.` : ''}
+${style} beer with ${color || 'beautiful'} color and ${foam || 'perfect'} foam head.
+${alcohol}% ABV, ${volume}.
+${taste} taste with ${aroma} aroma profile.
+${packaging ? `${packaging} packaging.` : ''}
 ${additionalInfo ? `${additionalInfo}` : ''}
-Professional studio photography, white and light gray backdrop, 360-degree product perspective, crisp details, catalog quality, premium lighting setup.`;
+Professional studio photography, white and light gray backdrop, 360-degree perspective, crisp details, catalog quality, premium studio lighting.`;
             } else if (selectedTemplate === 'lifestyle') {
-                prompt = `Lifestyle product photography: ${name} (${brand}, ${country}).
-${type} with ${color || 'rich'} appearance, ${packaging || 'elegant bottle'} design.
+                prompt = `Lifestyle beer photography: ${name} (${brand}, ${country}).
+${style} beer with ${color || 'rich'} appearance, ${clarity || 'crystal clear'} look, ${foam || 'thick'} foam.
 ${alcohol}% alcohol, ${volume}.
-${filtration ? `${filtration} filtered.` : ''}
+Flavor: ${taste}, Aromas: ${aroma}.
+${packaging ? `In ${packaging}.` : ''}
 ${additionalInfo ? `${additionalInfo}` : ''}
-Styled table scene with complementary items, natural soft lighting, moody ambiance, magazine-quality photography, shallow depth of field, warm tones.`;
+Styled bar/table scene, frosted glass, natural soft lighting, moody ambiance, magazine-quality, shallow depth of field, warm tones.`;
             }
 
             document.getElementById('promptBox').textContent = prompt;
@@ -469,12 +556,18 @@ Styled table scene with complementary items, natural soft lighting, moody ambian
             });
         }
 
-        function openInMidjourney() {
-            alert('📝 Скопіюйте prompt вверху і вставте в Midjourney Discord канал\n\nКоманда: /imagine prompt: [ваш_prompt]');
+        function downloadPrompt() {
+            const text = document.getElementById('promptBox').textContent;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', 'beer-prompt.txt');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         }
 
-        // Enter для генерації
-        document.getElementById('beverageName').addEventListener('keypress', function(e) {
+        document.getElementById('beerName').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && e.ctrlKey) generatePrompt();
         });
     </script>
