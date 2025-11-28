@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beverage UI Kit - AI Prompt Generator</title>
+    <style>
+        :root {
+            --primary: #8B4513;
+            --secondary: #D2B48C;
+            --accent: #C41E3A;
+            --bg: #F5F1EB;
+            --text: #2C2C2C;
+            --border: #D4AF86;
+            --success: #2E7D32;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text);
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #a01830;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #b8945a;
+        }
+
+        .btn-copy {
+            background: var(--success);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-copy:hover {
+            background: #1b5e20;
+        }
+
+        /* Output */
+        .output-section {
+            background: #f9f9f9;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .output-section.active {
+            display: block;
+        }
+
+        .output-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .prompt-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text);
+            word-break: break-word;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .copied-notification {
+            background: var(--success);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-top: 12px;
+            display: none;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .copied-notification.show {
+            display: block;
+        }
+
+        /* Template selection */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .template-card {
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .template-card:hover {
+            border-color: var(--accent);
+            background: #f0e6e0;
+        }
+
+        .template-card.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tips */
+        .tips {
+            background: #FFF8DC;
+            border-left: 4px solid var(--accent);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-top: 16px;
+        }
+
+        .tips strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍷 AI Prompt Generator для UI Kit</h1>
+        <p class="subtitle">Введіть деталі напою, отримайте готовий prompt для AI</p>
+
+        <!-- ОСНОВНА ФОРМА -->
+        <div class="section">
+            <div class="section-title">📝 Інформація про напій</div>
+
+            <div class="form-group">
+                <label>Назва напою *</label>
+                <input type="text" id="beverageName" placeholder="Наприклад: Premium Red Wine, Craft IPA Beer">
+                <div class="input-hint">Як називається цей напій</div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Бренд *</label>
+                    <input type="text" id="brand" placeholder="Наприклад: Chateau Lafite">
+                </div>
+                <div class="form-group">
+                    <label>Країна *</label>
+                    <input type="text" id="country" placeholder="Наприклад: Франція, США">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Тип напою *</label>
+                    <select id="type">
+                        <option>Виберіть тип</option>
+                        <option>Червоне вино</option>
+                        <option>Біле вино</option>
+                        <option>Шампанське</option>
+                        <option>Пиво (Lager)</option>
+                        <option>Пиво (IPA)</option>
+                        <option>Пиво (Stout)</option>
+                        <option>Виски</option>
+                        <option>Горілка</option>
+                        <option>Інший</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Колір напою</label>
+                    <input type="text" id="color" placeholder="Наприклад: Темно-рубіновий, світло-золотий">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Фільтрація</label>
+                    <input type="text" id="filtration" placeholder="Наприклад: Природна, механічна">
+                </div>
+                <div class="form-group">
+                    <label>Алкоголь (%) *</label>
+                    <input type="number" id="alcohol" placeholder="14.5" min="0" max="100" step="0.1">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Обсяг упаковки *</label>
+                    <input type="text" id="volume" placeholder="750 мл">
+                </div>
+                <div class="form-group">
+                    <label>Пакування</label>
+                    <input type="text" id="packaging" placeholder="Скляна пляшка, канна, пакет">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Додаткові характеристики</label>
+                <textarea id="additionalInfo" placeholder="Смак, аромат, визуальний стиль, особливості..."></textarea>
+                <div class="input-hint">Опишіть, що робить цей напій унікальним</div>
+            </div>
+        </div>
+
+        <!-- ШАБЛОН PROMPT -->
+        <div class="section">
+            <div class="section-title">🎨 Вибір шаблону</div>
+
+            <div class="template-grid">
+                <div class="template-card selected" data-template="realistic">
+                    <div>📸</div>
+                    <div style="margin-top: 4px;">Реалістичне фото</div>
+                </div>
+                <div class="template-card" data-template="product">
+                    <div>🛍️</div>
+                    <div style="margin-top: 4px;">Product shot</div>
+                </div>
+                <div class="template-card" data-template="lifestyle">
+                    <div>🌟</div>
+                    <div style="margin-top: 4px;">Lifestyle фото</div>
+                </div>
+            </div>
+
+            <div class="tips">
+                <strong>💡 Порада:</strong> Вибір шаблону впливає на стиль фото, яке згенерує AI. Реалістичне - для каталогу, Product shot - для реклами, Lifestyle - для соцмереж.
+            </div>
+        </div>
+
+        <!-- КНОПКА ГЕНЕРАЦІЇ -->
+        <div class="section">
+            <button class="btn-primary" onclick="generatePrompt()" style="width: 100%; padding: 16px;">
+                ✨ Генерувати Prompt
+            </button>
+        </div>
+
+        <!-- РЕЗУЛЬТАТ -->
+        <div class="section output-section" id="outputSection">
+            <div class="section-title">📋 Готовий Prompt для AI (Midjourney/DALL-E)</div>
+
+            <div class="prompt-box" id="promptBox">
+                Prompt з'явиться тут...
+            </div>
+
+            <div class="button-group">
+                <button class="btn-copy" onclick="copyToClipboard()">📋 Копіювати Prompt</button>
+                <button class="btn-secondary" onclick="openInMidjourney()">🚀 Відкрити в Midjourney</button>
+            </div>
+
+            <div class="copied-notification" id="copiedNotif">✅ Prompt скопійовано в буфер обміну!</div>
+        </div>
+
+        <!-- ІНСТРУКЦІЇ -->
+        <div class="section">
+            <div class="section-title">📖 Як використовувати</div>
+            <div style="font-size: 13px; line-height: 1.8; color: #555;">
+                <p style="margin-bottom: 12px;"><strong>1. Заповніть форму</strong> з деталями напою (назва, бренд, країна)</p>
+                <p style="margin-bottom: 12px;"><strong>2. Виберіть стиль фото</strong> - реалістичне, product shot або lifestyle</p>
+                <p style="margin-bottom: 12px;"><strong>3. Натисніть "Генерувати Prompt"</strong> - AI створить текст для генератора</p>
+                <p style="margin-bottom: 12px;"><strong>4. Копіюйте prompt</strong> і вставте в Midjourney, DALL-E або іншу AI</p>
+                <p><strong>5. AI створить фото</strong> для вашого UI Kit 🎉</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTemplate = 'realistic';
+
+        // Обрання шаблону
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedTemplate = this.dataset.template;
+            });
+        });
+
+        function generatePrompt() {
+            const name = document.getElementById('beverageName').value.trim();
+            const brand = document.getElementById('brand').value.trim();
+            const country = document.getElementById('country').value.trim();
+            const type = document.getElementById('type').value;
+            const color = document.getElementById('color').value.trim();
+            const filtration = document.getElementById('filtration').value.trim();
+            const alcohol = document.getElementById('alcohol').value.trim();
+            const volume = document.getElementById('volume').value.trim();
+            const packaging = document.getElementById('packaging').value.trim();
+            const additionalInfo = document.getElementById('additionalInfo').value.trim();
+
+            // Валідація
+            if (!name || brand === '' || country === '' || type === 'Виберіть тип' || !alcohol || !volume) {
+                alert('⚠️ Заповніть всі обов\'язкові поля (позначені *)');
+                return;
+            }
+
+            let prompt = '';
+
+            if (selectedTemplate === 'realistic') {
+                prompt = `Professional product photography of ${name} by ${brand} from ${country}. 
+Bottle showing: ${type}, ${color || 'elegant'} color, ${packaging || 'premium glass bottle'}.
+Alcohol content: ${alcohol}%, Volume: ${volume}.
+${filtration ? `Filtration: ${filtration}.` : ''}
+${additionalInfo ? `Characteristics: ${additionalInfo}.` : ''}
+Studio lighting, white background, 4k, professional product shot, sharp focus, clean minimalist style.`;
+            } else if (selectedTemplate === 'product') {
+                prompt = `E-commerce product shot: ${name} - ${brand} from ${country}.
+${type}, ${color || 'beautiful'} liquid in ${packaging || 'bottle'}.
+${alcohol}% alcohol, ${volume} volume.
+${filtration ? `${filtration} filtration.` : ''}
+${additionalInfo ? `${additionalInfo}` : ''}
+Professional studio photography, white and light gray backdrop, 360-degree product perspective, crisp details, catalog quality, premium lighting setup.`;
+            } else if (selectedTemplate === 'lifestyle') {
+                prompt = `Lifestyle product photography: ${name} (${brand}, ${country}).
+${type} with ${color || 'rich'} appearance, ${packaging || 'elegant bottle'} design.
+${alcohol}% alcohol, ${volume}.
+${filtration ? `${filtration} filtered.` : ''}
+${additionalInfo ? `${additionalInfo}` : ''}
+Styled table scene with complementary items, natural soft lighting, moody ambiance, magazine-quality photography, shallow depth of field, warm tones.`;
+            }
+
+            document.getElementById('promptBox').textContent = prompt;
+            document.getElementById('outputSection').classList.add('active');
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('promptBox').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                document.getElementById('copiedNotif').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('copiedNotif').classList.remove('show');
+                }, 2000);
+            });
+        }
+
+        function openInMidjourney() {
+            alert('📝 Скопіюйте prompt вверху і вставте в Midjourney Discord канал\n\nКоманда: /imagine prompt: [ваш_prompt]');
+        }
+
+        // Enter для генерації
+        document.getElementById('beverageName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) generatePrompt();
+        });
+    </script>
+</body>
+</html>
